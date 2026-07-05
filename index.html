@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Formula Builder Box</title>
+  <!-- Google Fonts: Inter for UI, Fira Code for code editor -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="logo">
+        <span class="logo-icon"><i class="fa-solid fa-square-root-variable"></i></span>
+        <h1>Validator Formula Builder</h1>
+      </div>
+      <div class="header-actions">
+        <span class="status-indicator connected">
+          <span class="dot"></span> Safe Interpreter Mode
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+      <!-- Left Sidebar (Toolbox) -->
+      <aside class="sidebar left-sidebar">
+        <!-- Field Selector Section -->
+        <section class="toolbox-section">
+          <div class="section-header">
+            <h3><i class="fa-solid fa-database"></i> Fields</h3>
+            <span class="help-tooltip" title="Click or drag a field to insert into formula">
+              <i class="fa-regular fa-circle-question"></i>
+            </span>
+          </div>
+          <div class="fields-list search-container">
+            <input type="text" id="field-search" class="search-input" placeholder="Search fields...">
+            <div id="fields-container" class="scrollable-list">
+              <!-- Rendered dynamically via app.js -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Function Toolbox Section -->
+        <section class="toolbox-section">
+          <div class="section-header">
+            <h3><i class="fa-solid fa-cube"></i> Functions</h3>
+          </div>
+          <div class="functions-list">
+            <div class="category-title">String Functions</div>
+            <div class="btn-grid" id="string-functions">
+              <!-- Rendered dynamically -->
+            </div>
+            <div class="category-title">Utility & Logic</div>
+            <div class="btn-grid" id="utility-functions">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </section>
+
+        <!-- Operators Toolbox Section -->
+        <section class="toolbox-section">
+          <div class="section-header">
+            <h3><i class="fa-solid fa-calculator"></i> Operators</h3>
+          </div>
+          <div class="operators-list">
+            <div class="category-title">Comparison</div>
+            <div class="btn-grid" id="comparison-operators">
+              <!-- Rendered dynamically -->
+            </div>
+            <div class="category-title">Logical & Brackets</div>
+            <div class="btn-grid" id="logical-operators">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <!-- Main Editor Container (Center) -->
+      <div class="editor-column">
+        <!-- Editor Box Card -->
+        <div class="card editor-card">
+          <div class="card-header">
+            <div class="title-with-subtitle">
+              <h2>Formula Workspace</h2>
+              <p>Build validation rules safely using structured tokens. Click insertion gaps or inputs to edit.</p>
+            </div>
+            <div class="card-actions">
+              <button id="btn-clear" class="btn btn-secondary-danger" title="Clear all tokens">
+                <i class="fa-solid fa-trash-can"></i> Clear
+              </button>
+            </div>
+          </div>
+          
+          <div class="card-body">
+            <!-- Formula Input Area -->
+            <div class="formula-editor-wrapper" id="formula-editor-container" tabindex="0">
+              <div class="formula-editor" id="formula-editor">
+                <!-- Tokens and insertion cursors rendered dynamically -->
+              </div>
+              <div class="formula-editor-placeholder" id="formula-placeholder">
+                Click functions/fields on the left or click here to start building validation...
+              </div>
+              <div class="editor-keyboard-hints">
+                <span><kbd>←</kbd><kbd>→</kbd> Navigate</span>
+                <span><kbd>Tab</kbd> Next slot</span>
+                <span><kbd>Backspace</kbd> Delete</span>
+                <span><kbd>Click</kbd> gaps to set cursor</span>
+              </div>
+            </div>
+
+            <!-- Formula Text Preview -->
+            <div class="formula-preview-bar" id="formula-preview" style="display:none;"></div>
+
+            <!-- Error and Syntax Console -->
+            <div class="validation-status-box" id="validation-status-box">
+              <!-- Dynamically shows parsing errors or 'Syntax Valid' -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Documentation & Guide Quick Card -->
+        <div class="card info-card">
+          <div class="info-content">
+            <div class="info-icon"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="info-text">
+              <h4>SQL / Regex Injection Protected</h4>
+              <p>This editor converts your inputs into structured tokens. Any custom text you input is treated purely as a string or number literal, preventing malicious query strings or regex exploit attempts from executing.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Sidebar (Sandbox & Tester) -->
+      <aside class="sidebar right-sidebar">
+        <div class="card sandbox-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-vial"></i> Sandbox Tester</h3>
+          </div>
+          <div class="card-body">
+            <p class="sandbox-desc">Enter mock values below to test your formula evaluation in real-time:</p>
+            
+            <div id="sandbox-fields-container" class="sandbox-fields-list">
+              <!-- Mock values inputs rendered dynamically based on active fields -->
+            </div>
+
+            <div class="evaluation-result-box" id="evaluation-result-box">
+              <div class="eval-status-placeholder">
+                <i class="fa-solid fa-hourglass-start"></i> Write a valid formula to see execution result
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Formula Schema / Legend Card -->
+        <div class="card legend-card">
+          <div class="card-header">
+            <h3><i class="fa-solid fa-circle-info"></i> Color Legend</h3>
+          </div>
+          <div class="card-body legend-grid">
+            <div class="legend-item"><span class="legend-dot token-field"></span> String Field</div>
+            <div class="legend-item"><span class="legend-dot token-field-num"></span> Number Field</div>
+            <div class="legend-item"><span class="legend-dot token-field-bool"></span> Boolean Field</div>
+            <div class="legend-item"><span class="legend-dot token-func"></span> Function</div>
+            <div class="legend-item"><span class="legend-dot token-op"></span> Operator</div>
+            <div class="legend-item"><span class="legend-dot token-lit"></span> Literal Value</div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="app.js?v=20260704_18"></script>
+</body>
+</html>
